@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config
+        xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
+        version="2.2">
+
+    <managed-bean>
+        <managed-bean-name>test</managed-bean-name>
+        <managed-bean-class>view.beans.TestBean </managed-bean-class>
+        <managed-bean-scope> view </managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>navigation</managed-bean-name>
+        <managed-bean-class>view.beans.NavigationBean </managed-bean-class>
+        <managed-bean-scope> view </managed-bean-scope>
+    </managed-bean>
+
+    <navigation-rule>
+        <from-view-id>/index.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>create</from-outcome>
+            <to-view-id>/create.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>login</from-outcome>
+            <to-view-id>/logIn.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/create.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>failed</from-outcome>
+            <to-view-id>/create.xhtml</to-view-id>
+
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/logIn.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>/secured/userProfile</from-outcome>
+            <to-view-id>/secured/userProfile.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>logIn</from-outcome>
+            <to-view-id>/logIn.xhtml</to-view-id>
+        </navigation-case>
+
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/secured/userProfile.xhtml</from-view-id>
+
+        <navigation-case>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/secured/log.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>logIn</from-outcome>
+            <to-view-id>/logIn.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+       <navigation-case>
+             <from-outcome>failed</from-outcome>
+            <to-view-id>/secured/userProfile.xhtml</to-view-id>
+        </navigation-case>
+
+        <navigation-case>
+            <from-outcome>findUserSuccess</from-outcome>
+            <to-view-id>/secured/search.xhtml</to-view-id>
+        </navigation-case>
+
+        <navigation-case>
+            <from-outcome>findUserFailed</from-outcome>
+            <to-view-id>/secured/search.xhtml</to-view-id>
+        </navigation-case>
+
+        <navigation-case>
+            <from-outcome>/secured/chart</from-outcome>
+            <to-view-id>/secured/chart.xhtml</to-view-id>
+        </navigation-case>
+
+    </navigation-rule>
+
+
+
+
+</faces-config>

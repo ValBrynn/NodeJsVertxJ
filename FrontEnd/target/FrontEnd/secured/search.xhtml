@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+    <title>Search</title>
+    <style>
+    .container {
+        width: 50%;
+        height: 50%;
+    }
+</style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script>
+
+
+        $(function() {
+            var desireduser = document.getElementById("desireduser").value;
+            var url = "http://192.168.99.100:9000/diagram/get/" +desireduser;
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data, textStatus, xhr){
+
+                    if(xhr.status==200){
+                        var x = data.x;
+                        var y = data.y;
+                        var z = data.z;
+                        var diagramType = data.chart;
+                        var diagramData = [x, y, z];
+                        var labels = ["X", "Y", "Z"];
+                        renderChart(diagramData, labels, diagramType);
+                    }
+                    else {
+                        $('#result').text("Error " + xhr.responseText+"---"+xhr+"---"+xhr.status+"---"+xhr+"---");
+                    }
+                    //Do work
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.log("========================== fail ==========================");
+                    $('#result').text(thrownError);
+                }
+            });
+
+
+        });
+
+        function renderChart(data, labels, type) {
+            var ctx = document.getElementById("myChart").getContext('2d');
+            if(type=="bar"){
+                var myChart = new Chart(ctx, {
+                    type: type,
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'My Diagram',
+                            data: data,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+
+
+            }else if(type=="pie"){
+                var myChart = new Chart(ctx, {
+                    type: type,
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'My Diagram',
+                            data: data,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        cutoutPercentage: 0.9
+                    }
+                });
+
+            }
+        }
+    </script>
+</h:head>
+<h:body>
+
+    <h1>Logs belonging to #{search.findUser}</h1>
+
+    <div>
+
+        <ui:repeat var="loglist" value="#{search.getLogList()}">
+            ID: #{loglist.id} &#xA0; Log: #{loglist.message} &#xA0; Posted: #{loglist.date} <br></br>
+        </ui:repeat>
+    </div>
+
+    <div class="container">
+        <canvas id="myChart"></canvas>
+    </div>
+    <h:form>
+        <h:panelGrid columns="3">
+
+            <h:commandLink action= "#{navigation.toUserProfile()}" value="Back"/>
+
+        </h:panelGrid>
+    </h:form>
+    <h:inputHidden value="#{search.findUser}" id="desireduser" />
+
+    <h3 id="result"></h3>
+
+</h:body>
+
+  </html>

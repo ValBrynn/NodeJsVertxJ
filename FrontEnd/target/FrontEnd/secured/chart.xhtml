@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+    <title>Create Chart</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script >
+        validate = function() {
+
+            var x = document.getElementById("myform:x").value;
+            var y = document.getElementById("myform:y").value;
+            var z = document.getElementById("myform:z").value;
+            var username = document.getElementById("myform:username").value;
+            var type = document.getElementById("myform:diagramType").value;
+            if(x=='' || y==''|| z==''){
+                alert("Fill all required fields scriptkiddie");
+
+            }else {
+                if(isNaN(x) ||isNaN(y) || isNaN(z)){
+                    alert("Only numbers allowed")
+                }else {
+                    sendDiagram(x,y,z,type,username)
+                }
+
+            }
+
+        }
+
+        function sendDiagram(x, y, z, type,username){
+
+            var url = "http://192.168.99.100:9000/diagram/add/" + username;
+
+            var jstonstring= JSON.stringify( {
+                x:x,
+                y:y,
+                z:z,
+                type:type
+            });
+
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify( {
+                    x:x,
+                    y:y,
+                    z:z,
+                    type:type
+                }),
+                success: function(data, textStatus, xhr){
+
+
+                    if(xhr.status==201){
+                        $('#result').text("Successfully added to database");
+                    }else if(xhr.status==401){
+                        $('#result').text("You are not welcome here");
+                    }else {
+                        $('#result').text("Error " + xhr.responseText+"---"+xhr+"---"+xhr.status+"---"+xhr+"---");
+                    }
+                    //Do work
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.log("========================== fail ==========================");
+                    $('#result').text("Error " + xhr.responseText+"---"+xhr+"---"+xhr.status+"---"+xhr+"---"+thrownError);
+
+
+                }
+            });
+
+        }
+    </script>
+</h:head>
+<h:body>
+    <header>
+        <h:form>
+            <h:panelGrid columns="1">
+                <h:commandLink action="#{login.logout}" value="Log out"></h:commandLink>
+            </h:panelGrid>
+        </h:form>
+    </header>
+    <h2>Create Chart</h2>
+    <h:form id ="myform">
+        <h:outputLabel>X: </h:outputLabel>
+        <h:inputText type="number" name="x" id="x"/>
+        <br />
+        <h:outputLabel>Y: </h:outputLabel>
+        <h:inputText type="number" name="y" id="y"/>
+        <br />
+        <h:outputLabel>Z: </h:outputLabel>
+        <h:inputText type="number" name="z" id="z"/>
+        <br />
+        &#xA0;
+        &#xA0;
+        <h:selectOneMenu name="diagramType" id="diagramType">
+            <f:selectItem itemValue="bar"> Diagram Type</f:selectItem>
+            <f:selectItem itemValue="pie"></f:selectItem>
+        </h:selectOneMenu>
+        <br />
+        <h:inputHidden value="#{logIn.userName}" id="username" />
+        &#xA0;
+        &#xA0;
+        <h:commandButton  id="submit" value="submit" action="button"
+                          onclick="validate();" type="button"/>
+    </h:form>
+
+    <div>
+        <h:form>
+            <h:commandLink action="#{navigation.toUserProfile}" value="Back"></h:commandLink>
+        </h:form>
+    </div>
+
+    <h3 id="result"></h3>
+
+    <div>
+        <div style="margin-top:20px">
+            <h:message id="failedCreatingDiagram" for="failedCreatingDiagram" style="font-size:10px;color:red;"></h:message>
+        </div>
+    </div>
+
+</h:body>
+
+</html>
